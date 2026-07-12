@@ -1,0 +1,7 @@
+[workspace]
+members = ["c64basic"]
+resolver = "2"
+
+[workspace.dependencies]
+crossterm = "0.28"
+rand = "0.8"
