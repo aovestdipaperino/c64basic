@@ -29,3 +29,16 @@ statements and dump the screen, `--parse-only` to validate a listing.
 
 MIT. The bundled game listings are the work of their original author,
 Daniele Piccoli, included for preservation and testing.
+
+## Browser (WebAssembly)
+
+The interpreter compiles to wasm and runs the international edition in a
+canvas, blitting 8x8 glyphs straight from the C64 character generator ROM.
+
+```bash
+wasm-pack build c64basic --target web --out-dir ../web/pkg -- --no-default-features
+python3 -m http.server -d web 8642   # then open http://localhost:8642
+```
+
+The prebuilt `web/` directory is committed, so any static host (GitHub
+Pages included) can serve it as-is.

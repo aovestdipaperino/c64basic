@@ -1,12 +1,16 @@
 //! 40x25 PETSCII framebuffer with C64-style cursor, colours, reverse-video
 //! and character-set switching. Renders to any `Write` using crossterm.
 
-use crate::petscii::{c64_color, color_code_index, glyph, glyph_c64font, Charset};
+#[cfg(feature = "terminal")]
+use crate::petscii::{c64_color, glyph, glyph_c64font};
+use crate::petscii::{color_code_index, Charset};
+#[cfg(feature = "terminal")]
 use crossterm::{
     cursor,
     style::{Print, ResetColor, SetBackgroundColor, SetForegroundColor},
     QueueableCommand,
 };
+#[cfg(feature = "terminal")]
 use std::io::{self, Write};
 
 pub const COLS: usize = 40;
@@ -262,6 +266,7 @@ impl Screen {
     /// Render to stdout. Uses crossterm commands. Always redraws the full
     /// grid; with 40x25 cells this is cheap enough. `line_no` is displayed
     /// in the status row so the user can see which BASIC line is executing.
+    #[cfg(feature = "terminal")]
     pub fn render<W: Write>(&mut self, out: &mut W, line_no: u32) -> io::Result<()> {
         if !self.dirty {
             return Ok(());

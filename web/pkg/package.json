@@ -1,0 +1,15 @@
+{
+  "name": "c64basic",
+  "type": "module",
+  "version": "0.1.0",
+  "files": [
+    "c64basic_bg.wasm",
+    "c64basic.js",
+    "c64basic.d.ts"
+  ],
+  "main": "c64basic.js",
+  "types": "c64basic.d.ts",
+  "sideEffects": [
+    "./snippets/*"
+  ]
+}

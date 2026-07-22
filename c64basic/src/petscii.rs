@@ -7,94 +7,34 @@
 //! This module also owns the 16-colour palette and the control-code names
 //! so the lexer can recognise `{clr}`, `{home}`, colour names, etc.
 
+#[cfg(feature = "terminal")]
 use crossterm::style::Color;
 
-/// C64 colour palette, indexed 0..=15.
+/// C64 colour palette as RGB triples, indexed 0..=15 (canonical VICE values).
+pub const PALETTE: [[u8; 3]; 16] = [
+    [0x00, 0x00, 0x00], // black
+    [0xFF, 0xFF, 0xFF], // white
+    [0x88, 0x00, 0x00], // red
+    [0xAA, 0xFF, 0xEE], // cyan
+    [0xCC, 0x44, 0xCC], // purple
+    [0x00, 0xCC, 0x55], // green
+    [0x00, 0x00, 0xAA], // blue
+    [0xEE, 0xEE, 0x77], // yellow
+    [0xDD, 0x88, 0x55], // orange
+    [0x66, 0x44, 0x00], // brown
+    [0xFF, 0x77, 0x77], // light red
+    [0x33, 0x33, 0x33], // dark grey
+    [0x77, 0x77, 0x77], // medium grey
+    [0xAA, 0xFF, 0x66], // light green
+    [0x00, 0x88, 0xFF], // light blue
+    [0xBB, 0xBB, 0xBB], // light grey
+];
+
+/// C64 colour palette as crossterm colours, indexed 0..=15.
+#[cfg(feature = "terminal")]
 pub fn c64_color(i: u8) -> Color {
-    // RGB approximations of the canonical VICE palette.
-    match i & 0x0F {
-        0 => Color::Rgb {
-            r: 0x00,
-            g: 0x00,
-            b: 0x00,
-        }, // black
-        1 => Color::Rgb {
-            r: 0xFF,
-            g: 0xFF,
-            b: 0xFF,
-        }, // white
-        2 => Color::Rgb {
-            r: 0x88,
-            g: 0x00,
-            b: 0x00,
-        }, // red
-        3 => Color::Rgb {
-            r: 0xAA,
-            g: 0xFF,
-            b: 0xEE,
-        }, // cyan
-        4 => Color::Rgb {
-            r: 0xCC,
-            g: 0x44,
-            b: 0xCC,
-        }, // purple
-        5 => Color::Rgb {
-            r: 0x00,
-            g: 0xCC,
-            b: 0x55,
-        }, // green
-        6 => Color::Rgb {
-            r: 0x00,
-            g: 0x00,
-            b: 0xAA,
-        }, // blue
-        7 => Color::Rgb {
-            r: 0xEE,
-            g: 0xEE,
-            b: 0x77,
-        }, // yellow
-        8 => Color::Rgb {
-            r: 0xDD,
-            g: 0x88,
-            b: 0x55,
-        }, // orange
-        9 => Color::Rgb {
-            r: 0x66,
-            g: 0x44,
-            b: 0x00,
-        }, // brown
-        10 => Color::Rgb {
-            r: 0xFF,
-            g: 0x77,
-            b: 0x77,
-        }, // light red
-        11 => Color::Rgb {
-            r: 0x33,
-            g: 0x33,
-            b: 0x33,
-        }, // dark grey
-        12 => Color::Rgb {
-            r: 0x77,
-            g: 0x77,
-            b: 0x77,
-        }, // medium grey
-        13 => Color::Rgb {
-            r: 0xAA,
-            g: 0xFF,
-            b: 0x66,
-        }, // light green
-        14 => Color::Rgb {
-            r: 0x00,
-            g: 0x88,
-            b: 0xFF,
-        }, // light blue
-        15 => Color::Rgb {
-            r: 0xBB,
-            g: 0xBB,
-            b: 0xBB,
-        }, // light grey
-        _ => unreachable!(),
-    }
+    let [r, g, b] = PALETTE[(i & 0x0F) as usize];
+    Color::Rgb { r, g, b }
 }
 
 /// Map a PETSCII colour control byte to the palette index it selects,
@@ -176,7 +116,7 @@ pub enum Charset {
 /// Convert a PETSCII print code to the C64 screen code the VIC-II would
 /// fetch from the character ROM (standard PETSCII-to-screen-code table).
 /// Control codes fall back to space.
-fn screen_code(byte: u8) -> u8 {
+pub fn screen_code(byte: u8) -> u8 {
     match byte {
         0x20..=0x3F => byte,
         0x40..=0x5F => byte - 0x40,
