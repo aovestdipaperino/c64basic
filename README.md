@@ -1,5 +1,7 @@
 # c64basic
 
+[![GitHub stars](https://img.shields.io/github/stars/aovestdipaperino/c64basic?logo=github&color=brightgreen)](https://github.com/aovestdipaperino/c64basic/stargazers)
+
 A Commodore 64 BASIC V2 interpreter in Rust that runs original petcat-format
 listings and renders the 40x25 PETSCII screen in a modern terminal with
 Unicode and ANSI colors. Glyph mappings are verified against the actual C64
